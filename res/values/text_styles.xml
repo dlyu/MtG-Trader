@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TradeOutcomeFontPositive" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">30dp</item>
+        <item name="android:textColor">#00FF00</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    <style name="TradeOutcomeFontNeutral" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">30dp</item>
+        <item name="android:textColor">#CCFF33</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    <style name="TradeOutcomeFontNegative" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">30dp</item>
+        <item name="android:textColor">#FF0000</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>    
+    <style name="PriceLabel" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">#DDDDDD</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="HeaderLabel" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">28dp</item>
+        <item name="android:textColor">#DDDDDD</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+</resources>

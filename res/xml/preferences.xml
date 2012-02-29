@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2008 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<PreferenceCategory
+        android:title="Trading">
+        <EditTextPreference
+            android:key="preference_price_gap"
+            android:title="Max Price Difference"
+            android:summary="The maximum price difference between the total price of what is being traded to consider the trade fair." 
+            android:defaultValue="1.00"
+            android:inputType="numberDecimal" />                
+    </PreferenceCategory>
+    
+	<!-- 
+    <PreferenceCategory
+        android:title="Price Updater">
+        <CheckBoxPreference
+            android:key="enableUpdate"
+            android:title="Enable Card Update"
+            android:summaryOn="Card prices will be checked and updated at regular intervals."
+            android:summaryOff="Card prices will not be checked and updated."
+            android:defaultValue="true"/>
+        <PreferenceScreen
+            android:title="Update Settings"
+            android:key="updatePrefs" >
+	        <EditTextPreference
+	            android:key="updateInterval"
+	            android:title="Update Interval"
+	            android:summary="The interval in minutes in which card prices are checked and updated."
+	            android:defaultValue="30"
+	            android:inputType="number" />
+		    <CheckBoxPreference
+	            android:key="notifyPriceChange"
+	            android:title="Notify Price Change"
+	            android:summaryOn="You will be notified when a card price changes."
+	            android:summaryOff="You will not be notified when a card price changes."
+	            android:defaultValue="true"/>
+            <CheckBoxPreference
+	            android:key="notifyStockChange"
+	            android:title="Notify Card Stock"
+	            android:summaryOn="You will be notified when a card sells out or is back in stock."
+	            android:summaryOff="You will not be notified when a card sells out or is back in stock."
+	            android:defaultValue="false"/>
+        </PreferenceScreen>
+    </PreferenceCategory>
+     -->
+    <PreferenceCategory
+        android:title="Internal Storage">
+        <CheckBoxPreference
+            android:key="autoSave"
+            android:title="Auto Save"
+            android:summaryOn="Your inventory and wishlist will be saved automatically upon exiting."
+            android:summaryOff="You will be prompted if you will save changes to your inventory and wishlist upon exiting."
+            android:defaultValue="true"/>
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/trade_screen_search"
+          android:icon="@drawable/ic_menu_search"
+          android:title="Search"/>
+    <item android:id="@+id/trade_screen_load_inventory"
+          android:icon="@drawable/ic_menu_upload"
+          android:title="Load Inventory" />
+    <item android:id="@+id/trade_screen_load_wishlist"
+          android:icon="@drawable/ic_menu_upload"
+          android:title="Load Wishlist" />
+</menu>

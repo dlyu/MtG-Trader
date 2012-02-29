@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MtG Trade Helper</string>
+    <string name="CARDLIST_INVENTORY">___inventory</string>
+    <string name="CARDLIST_WISHLIST">___wishlist</string>
+    <string name="PREFERENCES_NAME">___mtgpreferences</string>
+    <!-- 
+    <string name="TRADE_OUTCOME_POSITIVE">PROFIT</string>
+    <string name="TRADE_OUTCOME_NEUTRAL">FAIR</string>
+    <string name="TRADE_OUTCOME_NEGATIVE">RIPOFF</string>
+     -->
+    <string name="AD_ID">a14f3dd018a7b2e</string>
+    <string name="PRICE_DIFF_TEXT">Price Difference</string>
+
+</resources>

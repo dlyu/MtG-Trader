@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/search_screen_add_to_inventory"
+          android:icon="@drawable/ic_menu_upload"
+          android:title="Add selected to inventory"/>
+    <item android:id="@+id/search_screen_add_to_wishlist"
+          android:icon="@drawable/ic_menu_upload"
+          android:title="Add selected to wishlist" />
+</menu>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="lib" path="C:/Users/Daniel Lyu/Documents/Daniel&apos;s Stuff/Programming/Eclipse Workspace/External Libraries/jsoup-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Android/android-sdk/extras/android/compatibility/v4/android-support-v4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Daniel Lyu/Documents/Daniel&apos;s Stuff/Programming/Eclipse Workspace/External Libraries/GoogleAdMobAdsSdkAndroid-4.3.1/GoogleAdMobAdsSdk-4.3.1.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
