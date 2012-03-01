@@ -3,6 +3,7 @@ package com.mtg.trade.guide;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -79,5 +80,14 @@ public class MainMenuActivity extends Activity {
         // Find a reference to the option button and set its onClickListener
         mOptionButton = (ImageView)findViewById(R.id.optionButton);
         mOptionButton.setOnClickListener(mOptionListener);
+    }
+    
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+    	if ((keyCode == KeyEvent.KEYCODE_SEARCH) && event.getRepeatCount() == 0) {
+			Intent i = new Intent(MainMenuActivity.this, SearchActivity.class);
+			startActivity(i);	
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 }

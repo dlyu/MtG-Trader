@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,9 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 	
 	private TradeScreenFragment mOffering;
 	private TradeScreenFragment mOffered;
+	
+	private float mMaxPriceDifference;
+	private boolean mSelectiveListLoad;
 
 	/**
 	 *
@@ -122,6 +126,10 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 		// Intialise ViewPager
 		this.intialiseViewPager();
 		
+		SharedPreferences prefs = getSharedPreferences(getString(R.string.PREFERENCES_NAME), MODE_PRIVATE);
+		mMaxPriceDifference = Float.parseFloat(prefs.getString("preference_price_gap", "1.0"));
+		mSelectiveListLoad = prefs.getBoolean("preference_selective_load", true);
+		
 		// Both sides of the trade will have zero value
 		judgeTrade();
 		if (savedInstanceState != null) {
@@ -155,33 +163,78 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+    	Intent i;
     	switch (item.getItemId()) {
     		case R.id.trade_screen_search:
-    			Intent i = new Intent(TradeActivity.this, SearchActivity.class);
+    			i = new Intent(TradeActivity.this, SearchActivity.class);
     			i.putExtra("requestCode", GlobalConstants.sFlagCallback);
     			startActivityForResult(i, GlobalConstants.sFlagCallback);		
 				return true;
 			case R.id.trade_screen_load_inventory:
-				mOffering.loadList(getString(R.string.CARDLIST_INVENTORY));
+				if (mSelectiveListLoad) {
+					i = new Intent(TradeActivity.this, InventoryActivity.class);
+	    			i.putExtra("requestCode", GlobalConstants.sFlagCallback);
+	    			startActivityForResult(i, GlobalConstants.sFlagCallback);
+				}
+				else {
+					mOffering.loadList(getString(R.string.CARDLIST_INVENTORY));
+				}
 				return true;
 			case R.id.trade_screen_load_wishlist:
-				mOffered.loadList(getString(R.string.CARDLIST_WISHLIST));
+				if (mSelectiveListLoad) {
+					i = new Intent(TradeActivity.this, WishlistActivity.class);
+	    			i.putExtra("requestCode", GlobalConstants.sFlagCallback);
+	    			startActivityForResult(i, GlobalConstants.sFlagCallback);
+				}
+				else {
+					mOffered.loadList(getString(R.string.CARDLIST_WISHLIST));
+				}
 				return true;
     	}
   
     	return(super.onOptionsItemSelected(item));
     }
     
+    /**/
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+    	if ((keyCode == KeyEvent.KEYCODE_SEARCH) && event.getRepeatCount() == 0) {
+			Intent i = new Intent(TradeActivity.this, SearchActivity.class);
+			i.putExtra("requestCode", GlobalConstants.sFlagCallback);
+			startActivityForResult(i, GlobalConstants.sFlagCallback);	
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+    
+    /*
+     * Called whenever this activity resumes from an Activity from which card data is retrieved.
+     * */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
     	if (requestCode == GlobalConstants.sFlagCallback) {
     		if (resultCode == RESULT_OK) {
-    			int pos = this.mTabHost.getCurrentTab();
     			TradeScreenFragment target;
-    			if (pos == 0) 
-    				target = mOffering;
-    			else
-    				target = mOffered;
+    			
+    			String listName = data.getStringExtra("listName");
+    			// If true, then this is being called after returning from the SearchActivity
+    			if (listName == null) {
+    				int pos = this.mTabHost.getCurrentTab();
+        			if (pos == 0) 
+        				target = mOffering;
+        			else
+        				target = mOffered;    				
+    			}
+    			// If true, then this is being called after returning from a subclass of CardListActivity
+    			else {
+    				if (listName.equals(getString(R.string.CARDLIST_INVENTORY))) {
+    					target = mOffering;
+    				}
+    				else {
+    					target = mOffered;
+    				}
+    			}
+
     			for (int i = 0; ; i++) {
     				// Display cards on wishlist
     				String[] cardData = data.getStringArrayExtra("card" + i);
@@ -191,7 +244,7 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
     				CardDataQuantity c = new CardDataQuantity(this, null);
     				c.setAllData(cardData);
     				c.setFragmentContainer(target);
-    				target.getCardList().addCardToView(c);
+    				target.getCardList().addCardToView(c, false);
     			}
     			target.recalculate();
     		}
@@ -286,12 +339,9 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 		float offeredPrice = mOffered.getPriceSum();
 		float diff = offeringPrice - offeredPrice;
 		
-		SharedPreferences prefs = getSharedPreferences(getString(R.string.PREFERENCES_NAME), MODE_PRIVATE);
-		float maxDifference = Float.parseFloat(prefs.getString("preference_price_gap", "1.0"));
-		
 		mTradeJudge.setText(String.format("%s\n$%.2f", getString(R.string.PRICE_DIFF_TEXT), Math.abs(diff)));
 		// FAIR TRADE, ONLY APPLIES WHEN BOTH PARTIES OFFER SOMETHING OR NOTHING
-		if (Math.abs(diff) < maxDifference) {
+		if (Math.abs(diff) < mMaxPriceDifference) {
 			// Giving stuff away for free is BAD
 			if (offeredPrice == 0 && offeringPrice > 0)
 				setNegativeJudge(diff);

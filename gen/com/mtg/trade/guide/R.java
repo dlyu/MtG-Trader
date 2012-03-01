@@ -12,23 +12,34 @@ public final class R {
     }
     public static final class drawable {
         public static final int button_inventory=0x7f020000;
-        public static final int button_options=0x7f020001;
-        public static final int button_search=0x7f020002;
-        public static final int button_trade=0x7f020003;
-        public static final int button_wishlist=0x7f020004;
-        public static final int close_button=0x7f020005;
-        public static final int exit_button=0x7f020006;
-        public static final int exit_button_normal=0x7f020007;
-        public static final int exit_button_pressed=0x7f020008;
-        public static final int ic_launcher=0x7f020009;
-        public static final int ic_menu_revert=0x7f02000a;
-        public static final int ic_menu_save=0x7f02000b;
-        public static final int ic_menu_search=0x7f02000c;
-        public static final int ic_menu_upload=0x7f02000d;
-        public static final int icon=0x7f02000e;
-        public static final int menu_background_land=0x7f02000f;
-        public static final int menu_background_port=0x7f020010;
-        public static final int mtg_logo=0x7f020011;
+        public static final int button_inventory_normal=0x7f020001;
+        public static final int button_inventory_pressed=0x7f020002;
+        public static final int button_options=0x7f020003;
+        public static final int button_options_normal=0x7f020004;
+        public static final int button_options_pressed=0x7f020005;
+        public static final int button_search=0x7f020006;
+        public static final int button_search_normal=0x7f020007;
+        public static final int button_search_pressed=0x7f020008;
+        public static final int button_trade=0x7f020009;
+        public static final int button_trade_normal=0x7f02000a;
+        public static final int button_trade_pressed=0x7f02000b;
+        public static final int button_wishlist=0x7f02000c;
+        public static final int button_wishlist_normal=0x7f02000d;
+        public static final int button_wishlist_pressed=0x7f02000e;
+        public static final int close_button=0x7f02000f;
+        public static final int exit_button=0x7f020010;
+        public static final int exit_button_normal=0x7f020011;
+        public static final int exit_button_pressed=0x7f020012;
+        public static final int ic_launcher=0x7f020013;
+        public static final int ic_menu_close=0x7f020014;
+        public static final int ic_menu_revert=0x7f020015;
+        public static final int ic_menu_save=0x7f020016;
+        public static final int ic_menu_search=0x7f020017;
+        public static final int ic_menu_upload=0x7f020018;
+        public static final int icon=0x7f020019;
+        public static final int menu_background_land=0x7f02001a;
+        public static final int menu_background_port=0x7f02001b;
+        public static final int mtg_logo=0x7f02001c;
     }
     public static final class id {
         public static final int ad_placeholder=0x7f08000f;
@@ -36,6 +47,7 @@ public final class R {
         public static final int cardLabel1=0x7f080000;
         public static final int cardLabel2=0x7f080001;
         public static final int cardList=0x7f080011;
+        public static final int card_list_cancel=0x7f080018;
         public static final int card_list_revert=0x7f080017;
         public static final int card_list_save=0x7f080016;
         public static final int card_list_search=0x7f080015;
@@ -48,15 +60,15 @@ public final class R {
         public static final int removeButton=0x7f080004;
         public static final int results=0x7f08000e;
         public static final int searchButton=0x7f080007;
-        public static final int search_screen_add_to_inventory=0x7f080018;
-        public static final int search_screen_add_to_wishlist=0x7f080019;
+        public static final int search_screen_add_to_inventory=0x7f080019;
+        public static final int search_screen_add_to_wishlist=0x7f08001a;
         public static final int startSearch=0x7f08000c;
         public static final int totalCost=0x7f080010;
         public static final int tradeButton=0x7f080006;
         public static final int trade_judgment=0x7f080013;
-        public static final int trade_screen_load_inventory=0x7f08001b;
-        public static final int trade_screen_load_wishlist=0x7f08001c;
-        public static final int trade_screen_search=0x7f08001a;
+        public static final int trade_screen_load_inventory=0x7f08001c;
+        public static final int trade_screen_load_wishlist=0x7f08001d;
+        public static final int trade_screen_search=0x7f08001b;
         public static final int viewpager=0x7f080012;
         public static final int wishlist=0x7f080014;
         public static final int wishlistButton=0x7f080009;
@@ -73,8 +85,9 @@ public final class R {
     }
     public static final class menu {
         public static final int cardlistoptions=0x7f070000;
-        public static final int searchlistoptions=0x7f070001;
-        public static final int tradelistoptions=0x7f070002;
+        public static final int cardlistoptions_callback=0x7f070001;
+        public static final int searchlistoptions=0x7f070002;
+        public static final int tradelistoptions=0x7f070003;
     }
     public static final class string {
         /**  

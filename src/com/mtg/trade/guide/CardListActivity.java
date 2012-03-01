@@ -11,7 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class CardListActivity extends Activity {
+public class CardListActivity extends Activity implements Returnable {
 	protected CardListLayout mList;
 	protected String mPreferencesListName;
 	
@@ -19,6 +19,8 @@ public class CardListActivity extends Activity {
 	protected Toast mToastReverted;
 	
 	protected AlertDialog.Builder mSavePrompt; 
+	
+	protected boolean mCallbackMode;
 
 	// Save
 	protected DialogInterface.OnClickListener mPositiveButtonListener = new DialogInterface.OnClickListener() {
@@ -65,8 +67,12 @@ public class CardListActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.cardlistoptions, menu);
-        
+        if (mCallbackMode) {
+        	inflater.inflate(R.menu.cardlistoptions_callback, menu);
+        }
+        else {
+        	inflater.inflate(R.menu.cardlistoptions, menu);
+        }
         return true;
     }
     
@@ -91,6 +97,9 @@ public class CardListActivity extends Activity {
 				if (mToastReverted != null)
 					mToastReverted.show();
 				return(true);
+			case R.id.card_list_cancel:
+				finish();
+				break;
     	}
   
     	return(super.onOptionsItemSelected(item));
@@ -161,16 +170,28 @@ public class CardListActivity extends Activity {
     
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
     	if ((keyCode == KeyEvent.KEYCODE_BACK) && event.getRepeatCount() == 0) {
-    		SharedPreferences prefs = getSharedPreferences(getString(R.string.PREFERENCES_NAME), MODE_PRIVATE);
-    		boolean autoSave = prefs.getBoolean("autoSave", true);
-    		if (autoSave) {
-    			writeToStorageList(mPreferencesListName);
+    		if (mCallbackMode) {
+    	    	if (getParent() == null) {
+    	    		setResult(Activity.RESULT_OK, onReturnCardInfo());
+    	    	}
     		}
     		else {
-    			mSavePrompt.show();
-                return false;	
+        		SharedPreferences prefs = getSharedPreferences(getString(R.string.PREFERENCES_NAME), MODE_PRIVATE);
+        		boolean autoSave = prefs.getBoolean("autoSave", true);
+        		if (autoSave) {
+        			writeToStorageList(mPreferencesListName);
+        		}
+        		else {
+        			mSavePrompt.show();
+                    return false;	
+        		}
     		}
-    			
+        }
+    	
+    	else if ((keyCode == KeyEvent.KEYCODE_SEARCH) && event.getRepeatCount() == 0 && !mCallbackMode) {
+			Intent i = new Intent(CardListActivity.this, SearchActivity.class);
+			i.putExtra("requestCode", GlobalConstants.sFlagCallback);
+			startActivityForResult(i, GlobalConstants.sFlagCallback);
         }
 
         return super.onKeyDown(keyCode, event);
@@ -181,4 +202,18 @@ public class CardListActivity extends Activity {
     public void finish() {
     	super.finish();
     }
+
+	@Override
+	public Intent onReturnCardInfo() {
+		// TODO Auto-generated method stub
+		Intent data = new Intent();
+		int prevResults = mList.getChildCount();
+		
+		data.putExtra("listName", mPreferencesListName);
+		for (int i = 0, j = 0; i < prevResults; i++) {
+			CardDataQuantity card = (CardDataQuantity) mList.getChildAt(i);
+			data.putExtra("card" + j++, card.getAllData());
+		}
+		return data;
+	}
 }

@@ -1,6 +1,7 @@
 package com.mtg.trade.guide;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -24,5 +25,18 @@ public class WishlistActivity extends CardListActivity {
         mSavePrompt.setNeutralButton("Return", mNeutralButtonListener);
         
         readFromStorageList(mPreferencesListName);
+        
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        mCallbackMode = true;
+        if (extras == null) {
+        	mCallbackMode = false;
+        }
+        else {
+        	int requestCode = extras.getInt("requestCode", GlobalConstants.sFlagNormal);
+        	if (requestCode == GlobalConstants.sFlagNormal) {
+        		mCallbackMode = false;
+        	}
+        }
     }
 }

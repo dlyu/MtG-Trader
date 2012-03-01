@@ -31,7 +31,7 @@ import com.google.ads.AdSize;
 import com.google.ads.AdView;
 
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends Activity implements Returnable {
 	private static String sUrl = "http://sales.starcitygames.com//search.php";
 	Button mSearchButton;
 	Button mMoreButton;
@@ -174,9 +174,7 @@ public class SearchActivity extends Activity {
     @Override
     public void finish() {
     	if (getParent() == null && mCallbackMode) {
-    		Intent data = new Intent();
-    		addCardListToIntent(data);
-    		setResult(Activity.RESULT_OK, data);
+    		setResult(Activity.RESULT_OK, onReturnCardInfo());
     	}
     	super.finish();
     }
@@ -420,17 +418,6 @@ public class SearchActivity extends Activity {
         editor.commit();
     }
     
-    public void addCardListToIntent(Intent data) {
-		int prevResults = mResults.getChildCount();
-		
-		for (int i = 0, j = 0; i < prevResults; i++) {
-			CardDataChecked card = (CardDataChecked) mResults.getChildAt(i);
-			if (card.getChecked()) {
-				data.putExtra("card" + j++, card.getAllDataWithoutChecked());
-			}
-		}
-    }
-    
     public void showAds() {
     	AdRequest request = new AdRequest();
 		if (mDebuggable) {
@@ -441,4 +428,19 @@ public class SearchActivity extends Activity {
 
 		mAdView.loadAd(request);
     }
+
+	@Override
+	public Intent onReturnCardInfo() {
+		// TODO Auto-generated method stub
+		Intent data = new Intent();
+		int prevResults = mResults.getChildCount();
+		
+		for (int i = 0, j = 0; i < prevResults; i++) {
+			CardDataChecked card = (CardDataChecked) mResults.getChildAt(i);
+			if (card.getChecked()) {
+				data.putExtra("card" + j++, card.getAllDataWithoutChecked());
+			}
+		}
+		return data;
+	}
 }

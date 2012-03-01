@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 public class TradeScreenFragment extends Fragment  {
 	private CardListLayout mCards;
 	private TextView mPriceSumTextView;
@@ -87,6 +86,7 @@ public class TradeScreenFragment extends Fragment  {
     		String productId = settings.getString(prefix + "_productId", null);
     		int quantity = settings.getInt(prefix + "_quantity", 1);
     		
+    		// Create and set card information
     		CardDataQuantity c = new CardDataQuantity(mActivity, null);
     		c.setName(name);
     		c.setEdition(edition);
@@ -95,7 +95,7 @@ public class TradeScreenFragment extends Fragment  {
     		c.setProductId(productId);
     		c.setQuantity(quantity);
     		
-    		mCards.addCardToView(c);
+    		mCards.addCardToView(c, false);
     		c.setFragmentContainer(this);
     	}
         recalculate();

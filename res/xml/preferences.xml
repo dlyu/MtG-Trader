@@ -24,7 +24,13 @@
             android:title="Max Price Difference"
             android:summary="The maximum price difference between the total price of what is being traded to consider the trade fair." 
             android:defaultValue="1.00"
-            android:inputType="numberDecimal" />                
+            android:inputType="numberDecimal" />
+        <CheckBoxPreference
+            android:key="preference_selective_load"
+            android:title="Allow Selective Load"
+            android:summaryOn="Allows selective loading of cards from your inventory and wishlist when requested from the trade screen."
+            android:summaryOff="Your entire inventory and wishlist will be loaded when requested from the trade screen."
+            android:defaultValue="true"/>              
     </PreferenceCategory>
     
 	<!-- 
