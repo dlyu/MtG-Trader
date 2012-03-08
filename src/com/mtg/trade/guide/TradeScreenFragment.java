@@ -74,7 +74,6 @@ public class TradeScreenFragment extends Fragment  {
 			
     	SharedPreferences settings = mActivity.getSharedPreferences(list, 0);
         for (int i = 0; ; i++) {
-        	
         	String prefix = "card" + i;
         	
     		String name = settings.getString(prefix + "_name", null);

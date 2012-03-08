@@ -53,6 +53,10 @@ public class CardListLayout extends LinearLayout {
     	}
 	}
 	
+	/*
+	 * Removes a specific card view from the list and from the product hashmap.
+	 * @param card: The View of the card to remove
+	 * */
 	public void removeCardFromView(CardDataQuantity card) {
 		int idx = this.indexOfChild(card);
 		int productHash = GlobalConstants.getProductHashFromView(card);
@@ -60,6 +64,10 @@ public class CardListLayout extends LinearLayout {
 		this.removeViewAt(idx);
 	}
 	
+	/*
+	 * Sets and returns the sum of the prices for all the cards in this list.
+	 * @return: the price sum of all the cards represented in this view. 
+	 * */
 	public float getPriceSum() {
 		mPriceSum = 0;
     	Iterator<CardDataQuantity> cards = mListMap.values().iterator();
@@ -67,5 +75,26 @@ public class CardListLayout extends LinearLayout {
     		mPriceSum += ((CardDataQuantity)cards.next()).getTotalPrice();
     	}
     	return mPriceSum;
+	}
+
+	/*
+	 * Rearranges the cards presented in this view alphabetically. 
+	 * */
+	public void sortByName() {
+		
+	}
+
+	/*
+	 * Rearranges the cards presented in this view by card price. 
+	 * */
+	public void sortByPrice() {
+		
+	}
+	
+	/*
+	 * Rearranges the cards presented in this view by card edition. 
+	 * */
+	public void sortByEdition() {
+		
 	}
 }

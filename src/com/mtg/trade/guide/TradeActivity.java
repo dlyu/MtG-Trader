@@ -1,6 +1,5 @@
 package com.mtg.trade.guide;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -30,7 +29,6 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 
 	private TabHost mTabHost; // Tab host that contains the tabs and the views corresponding to each tab
 	private ViewPager mViewPager; // The layout that corresponds with each tab that the user can scroll across
-	private HashMap<String, TabInfo> mMapTabInfo = new HashMap<String, TradeActivity.TabInfo>();
 	private PagerAdapter mPagerAdapter;
 	private TextView mTradeJudge;
 	
@@ -40,23 +38,6 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 	private float mMaxPriceDifference;
 	private boolean mSelectiveListLoad;
 
-	/**
-	 *
-	 * @author mwho
-	 * Maintains extrinsic info of a tab's construct
-	 */
-	private class TabInfo {
-		 private String tag;
-         private Class<?> clss;
-         private Bundle args;
-         private Fragment fragment;
-         TabInfo(String tag, Class<?> clazz, Bundle args) {
-        	 this.tag = tag;
-        	 this.clss = clazz;
-        	 this.args = args;
-         }
-
-	}
 	/**
 	 * A simple factory that returns dummy views to the Tabhost
 	 * @author mwho
@@ -274,11 +255,8 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 	private void initialiseTabHost(Bundle args) {
 		mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup();
-        TabInfo tabInfo = null;
-        TradeActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("tab_offering").setIndicator("Giving"), ( tabInfo = new TabInfo("tab_offering", TradeScreenFragment.class, args)));
-        this.mMapTabInfo.put(tabInfo.tag, tabInfo);
-        TradeActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("tab_offered").setIndicator("Receiving"), ( tabInfo = new TabInfo("tab_offered", TradeScreenFragment.class, args)));
-        this.mMapTabInfo.put(tabInfo.tag, tabInfo);
+        TradeActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("tab_offering").setIndicator("Giving"));
+        TradeActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("tab_offered").setIndicator("Receiving"));
 
         mTabHost.setOnTabChangedListener(this);
 	}
@@ -291,7 +269,7 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 	 * @param clss
 	 * @param args
 	 */
-	private static void addTab(TradeActivity activity, TabHost tabHost, TabHost.TabSpec tabSpec, TabInfo tabInfo) {
+	private static void addTab(TradeActivity activity, TabHost tabHost, TabHost.TabSpec tabSpec) {
 		// Attach a Tab view factory to the spec
 		tabSpec.setContent(activity.new TabFactory(activity));
         tabHost.addTab(tabSpec);
@@ -373,5 +351,9 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 	
 	private void setNegativeJudge(float diff) {
 		mTradeJudge.setTextAppearance(this, R.style.TradeOutcomeFontNegative);	
+	}
+	
+	private void syncInventoryAndWishList() {
+		
 	}
 }

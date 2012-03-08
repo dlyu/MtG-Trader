@@ -3,6 +3,7 @@ package com.mtg.trade.guide;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.regex.*;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -59,11 +60,13 @@ public class SearchActivity extends Activity implements Returnable {
 	
 	private boolean mDebuggable;
 	private AdView mAdView;
+	
+	private Pattern mPriceRegex;
 
 	private View.OnClickListener mSearchListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			try {
-				// Execute a whole new search query
+				// Execute a whole new search queryl
 				String cardQuery = mCard.getText().toString();
 				if (cardQuery != null) {
 					
@@ -161,6 +164,8 @@ public class SearchActivity extends Activity implements Returnable {
         LinearLayout adPlaceholder = (LinearLayout)findViewById(R.id.ad_placeholder);
 	    mAdView = new AdView(this, AdSize.BANNER, this.getString(R.string.AD_ID));
 
+	    mPriceRegex = Pattern.compile("\\$\\d+\\.\\d{2}");
+	    
 	    // Add the adView to it
 	    adPlaceholder.addView(mAdView);
     }
@@ -329,11 +334,18 @@ public class SearchActivity extends Activity implements Returnable {
     	mLastProductId = productId;
     	
     	Element cardPriceElement = data.get(priceIdx);
-    	String cardPrice = cardPriceElement.html();
+    	String cardPrice = "";
 
+    	Matcher priceMatches = mPriceRegex.matcher(cardPriceElement.html());
+    	
+    	// Pick the last match as that represents the sale value (if any)
+    	while (priceMatches.find()) {
+    		cardPrice = priceMatches.group();
+    	}
+    	
     	CardDataChecked cardView = new CardDataChecked(this, null);
     	cardView.setAllData(new String[] {cardName, cardEdition, cardPrice, cardCondition, productId, "false"});
-    	//mResults.addView(cardView);
+
     	return cardView;
     }
     
