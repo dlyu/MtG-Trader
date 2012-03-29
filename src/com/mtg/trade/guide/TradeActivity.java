@@ -1,7 +1,14 @@
 package com.mtg.trade.guide;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
+
+import org.jsoup.Jsoup;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +19,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,19 +33,27 @@ import android.widget.TextView;
  * The <code>TabsViewPagerFragmentActivity</code> class implements the Fragment activity that maintains a TabHost using a ViewPager.
  * @author mwho
  */
-public class TradeActivity extends FragmentActivity implements TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
-
+public class TradeActivity extends FragmentActivity implements TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener, QuantityChangedListener {
+	public static final String TRADE_STATE_PENDING = "Pending";
+	public static final String TRADE_STATE_ACCEPTED = "Accepted";
+	
 	private TabHost mTabHost; // Tab host that contains the tabs and the views corresponding to each tab
 	private ViewPager mViewPager; // The layout that corresponds with each tab that the user can scroll across
 	private PagerAdapter mPagerAdapter;
 	private TextView mTradeJudge;
+	private TextView mTradeStatus;
 	
 	private TradeScreenFragment mOffering;
 	private TradeScreenFragment mOffered;
 	
 	private float mMaxPriceDifference;
-	private boolean mSelectiveListLoad;
+	private boolean mAutoSaveTrade;
+	private boolean mSyncLists;
 
+	// Variables that will be saved into an XML file
+	private boolean mTradeAccepted = false;
+	private String mDescription = "";
+	
 	/**
 	 * A simple factory that returns dummy views to the Tabhost
 	 * @author mwho
@@ -101,6 +117,7 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 		setContentView(R.layout.tradescreen);
 		
 		mTradeJudge = (TextView)findViewById(R.id.trade_judgment);
+		//mTradeStatus = (TextView)findViewById(R.id.trade_status);
 		
 		// Initialise the TabHost
 		this.initialiseTabHost(savedInstanceState);
@@ -109,10 +126,11 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 		
 		SharedPreferences prefs = getSharedPreferences(getString(R.string.PREFERENCES_NAME), MODE_PRIVATE);
 		mMaxPriceDifference = Float.parseFloat(prefs.getString("preference_price_gap", "1.0"));
-		mSelectiveListLoad = prefs.getBoolean("preference_selective_load", true);
+		mAutoSaveTrade = prefs.getBoolean("preference_auto_trade_save", true);
+		mSyncLists = prefs.getBoolean("preference_auto_sync_list", true);
 		
-		// Both sides of the trade will have zero value
 		judgeTrade();
+		//setTradeStatus();
 		if (savedInstanceState != null) {
 			String tab = savedInstanceState.getString("tab");
 			if (tab != null)
@@ -123,6 +141,13 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 	@Override
 	protected void onPause() {
 		super.onPause();
+	}
+	
+	@Override
+	public void finish() {
+		super.finish();
+		if (mAutoSaveTrade)
+			saveTrade();
 	}
 
 	/** (non-Javadoc)
@@ -152,25 +177,30 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
     			startActivityForResult(i, GlobalConstants.sFlagCallback);		
 				return true;
 			case R.id.trade_screen_load_inventory:
-				if (mSelectiveListLoad) {
-					i = new Intent(TradeActivity.this, InventoryActivity.class);
-	    			i.putExtra("requestCode", GlobalConstants.sFlagCallback);
-	    			startActivityForResult(i, GlobalConstants.sFlagCallback);
-				}
-				else {
-					mOffering.loadList(getString(R.string.CARDLIST_INVENTORY));
-				}
+				i = new Intent(TradeActivity.this, InventoryActivity.class);
+    			i.putExtra("requestCode", GlobalConstants.sFlagCallback);
+    			startActivityForResult(i, GlobalConstants.sFlagCallback);
 				return true;
 			case R.id.trade_screen_load_wishlist:
-				if (mSelectiveListLoad) {
-					i = new Intent(TradeActivity.this, WishlistActivity.class);
-	    			i.putExtra("requestCode", GlobalConstants.sFlagCallback);
-	    			startActivityForResult(i, GlobalConstants.sFlagCallback);
-				}
-				else {
-					mOffered.loadList(getString(R.string.CARDLIST_WISHLIST));
-				}
+				i = new Intent(TradeActivity.this, WishlistActivity.class);
+    			i.putExtra("requestCode", GlobalConstants.sFlagCallback);
+    			startActivityForResult(i, GlobalConstants.sFlagCallback);
 				return true;
+				
+			// Commands related to the trade itself
+				/*
+			case R.id.trade_screen_save_trade:
+				saveTrade();
+				return true;
+			case R.id.trade_screen_load_trade:
+				return true;
+			case R.id.trade_screen_accept_trade:
+				mTradeAccepted = !mTradeAccepted;
+				setTradeStatus();
+				if (mSyncLists)
+					syncInventoryAndWishList();
+				return true;
+				*/
     	}
   
     	return(super.onOptionsItemSelected(item));
@@ -183,6 +213,11 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 			Intent i = new Intent(TradeActivity.this, SearchActivity.class);
 			i.putExtra("requestCode", GlobalConstants.sFlagCallback);
 			startActivityForResult(i, GlobalConstants.sFlagCallback);	
+        }
+    	
+    	else if ((keyCode == KeyEvent.KEYCODE_BACK) && event.getRepeatCount() == 0) {
+    		if (mAutoSaveTrade)
+    			saveTrade();
         }
 
         return super.onKeyDown(keyCode, event);
@@ -216,18 +251,21 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
     				}
     			}
 
+    			//target.getCardList().toggleChainedMode();
     			for (int i = 0; ; i++) {
     				// Display cards on wishlist
     				String[] cardData = data.getStringArrayExtra("card" + i);
     				if (cardData == null)
     					break;
 
-    				CardDataQuantity c = new CardDataQuantity(this, null);
-    				c.setAllData(cardData);
-    				c.setFragmentContainer(target);
+    				RawCardData c = new RawCardData(cardData, null);
+    				c.setQuantityChangeListener(this);
     				target.getCardList().addCardToView(c, false);
+    				//c.getView().setFragmentContainer(target);
     			}
+    			//target.getCardList().toggleChainedMode();
     			target.recalculate();
+    			judgeTrade();
     		}
     	}
     }
@@ -311,13 +349,19 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 		// TODO Auto-generated method stub
 
 	}
+	/*
+	// Sets the trade status message to the proper text and in the proper font
+	public void setTradeStatus() {
+		mTradeStatus.setText(String.format("Status\n%s", mTradeAccepted ? TRADE_STATE_ACCEPTED : TRADE_STATE_PENDING));
+		mTradeStatus.setTextAppearance(this, mTradeAccepted ? R.style.TradeOutcomeFontPositive : R.style.TradeOutcomeFontNegative);
+	}*/
 	
-	public void judgeTrade() {
+	private void judgeTrade() {
 		float offeringPrice = mOffering.getPriceSum();
 		float offeredPrice = mOffered.getPriceSum();
-		float diff = offeringPrice - offeredPrice;
+		float diff = offeredPrice - offeringPrice;
 		
-		mTradeJudge.setText(String.format("%s\n$%.2f", getString(R.string.PRICE_DIFF_TEXT), Math.abs(diff)));
+		mTradeJudge.setText(String.format("%s\n$%.2f", getString(R.string.PRICE_DIFF_TEXT), diff));
 		// FAIR TRADE, ONLY APPLIES WHEN BOTH PARTIES OFFER SOMETHING OR NOTHING
 		if (Math.abs(diff) < mMaxPriceDifference) {
 			// Giving stuff away for free is BAD
@@ -341,19 +385,43 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 		}
 	}
 	
+	/*
+	 * Sets the trade judge text view when the trade is in the user's favour.
+	 * @param diff: The price difference between the two sides of the trade, with the user receiving more than what is being given.
+	 * */
 	private void setPositiveJudge(float diff) {
 		mTradeJudge.setTextAppearance(this, R.style.TradeOutcomeFontPositive);
 	}
-	
+
+	/*
+	 * Sets the trade judge text view when the trade is fair for both sides.
+	 * @param diff: The price difference between the two sides of the trade, which falls below the maximum price difference.
+	 * */
 	private void setNeutralJudge(float diff) {
 		mTradeJudge.setTextAppearance(this, R.style.TradeOutcomeFontNeutral);
 	}
 	
+	/*
+	 * Sets the trade judge text view when the trade is against the user's favour.
+	 * @param diff: The price difference between the two sides of the trade, with the user giving more than what is being received.
+	 * */
 	private void setNegativeJudge(float diff) {
 		mTradeJudge.setTextAppearance(this, R.style.TradeOutcomeFontNegative);	
 	}
 	
+	private void saveTrade() {
+		
+	}
+	
 	private void syncInventoryAndWishList() {
 		
+	}
+
+	@Override
+	public void onQuantityChange(QuantityChangedEvent q) {
+		// TODO Auto-generated method stub
+		judgeTrade();
+		mOffered.recalculate();
+		mOffering.recalculate();
 	}
 }

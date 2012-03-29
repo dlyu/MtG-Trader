@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:custom="http://schemas.android.com/apk/res/com.mtg.trade.guide"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:orientation="vertical">
@@ -18,6 +19,8 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:orientation="vertical"
-	        android:id="@+id/cardList"/>
+	        android:id="@+id/cardList"
+	        custom:cardsCheckable="false"
+            custom:cardsQuantifiable="true"/>
     </ScrollView>
 </LinearLayout>

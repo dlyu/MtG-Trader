@@ -38,7 +38,7 @@ public class SearchActivity extends Activity implements Returnable {
 	Button mMoreButton;
 	
 	EditText mCard;
-	LinearLayout mResults;
+	CardListLayout mResults;
 	
 	String mLastCardName;
 	String mLastEditionName;
@@ -132,7 +132,7 @@ public class SearchActivity extends Activity implements Returnable {
         
         mCard = (EditText)findViewById(R.id.card);
         
-        mResults = (LinearLayout)findViewById(R.id.results);
+        mResults = (CardListLayout)findViewById(R.id.results);
 
         mInternetError = Toast.makeText(this, "No network connection available. Cannot perform a search.", Toast.LENGTH_SHORT);
         mGenericError = Toast.makeText(this, "Something went wrong. Cannot perform a search.", Toast.LENGTH_SHORT);
@@ -196,11 +196,15 @@ public class SearchActivity extends Activity implements Returnable {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	if (!mCallbackMode) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.searchlistoptions, menu);    		
+    	MenuInflater inflater = getMenuInflater();
+    	if (mCallbackMode) {
+            inflater.inflate(R.menu.searchlistoptions_callback, menu);
+                		
     	}
-        
+    	else {
+    		inflater.inflate(R.menu.searchlistoptions, menu);
+    	}
+    	
         return true;
     }
     
@@ -216,6 +220,14 @@ public class SearchActivity extends Activity implements Returnable {
 				addCardListToWishlist();
 				mToastAddedToWishlist.show();
 				return(true);
+				
+			case R.id.search_screen_select_all:
+				mResults.selectAll(true);
+				return true;
+				
+			case R.id.search_screen_unselect_all:
+				mResults.selectAll(false);
+				return true;
     	}
   
     	return(super.onOptionsItemSelected(item));
@@ -229,9 +241,9 @@ public class SearchActivity extends Activity implements Returnable {
     private void searchGET(String query, boolean more) throws IOException {
 		query = query.trim().replaceAll(" +", "+"); // Replace all spaces with +'s
 		query = sUrl + "?substring=" + query + "&start=" + mQueryStart;
-    	
+
 		Document doc = Jsoup.connect(query).get();
-		Vector<CardDataChecked> cards = searchDocument(doc);
+		Vector<RawCardData> cards = searchDocument(doc);
 		if (cards == null)
 			return;
 		if (cards.size() == 0) {
@@ -242,7 +254,7 @@ public class SearchActivity extends Activity implements Returnable {
 		// Don't touch the results if we are doing a continuation search
 		if (!more) {
 			// Don't get rid of cards that are checked already.
-			Vector<CardDataChecked> checkedCards = getCheckedCards();
+			Vector<RawCardData> checkedCards = getCheckedCards();
 			mResults.removeAllViews();
 			addCardListToResult(checkedCards);
 		}
@@ -262,17 +274,17 @@ public class SearchActivity extends Activity implements Returnable {
      * 
      * return: A Vector of all the cards in the HTML document in the form of CardDataChecked views
      * */
-    private Vector<CardDataChecked> searchDocument(Document doc) throws IOException {
+    private Vector<RawCardData> searchDocument(Document doc) throws IOException {
 
 		Elements cards = doc.select("tr[class]");
 
-		Vector<CardDataChecked> results = new Vector<CardDataChecked>();
+		Vector<RawCardData> results = new Vector<RawCardData>();
 		for (Element card : cards) {
 			if (card.className().equals("deckdbbody") || card.className().equals("deckdbbody2")) {
-				CardDataChecked cardView = extractCardInfo(card);
-				if (cardView == null)
+				RawCardData cardData = extractCardInfo(card);
+				if (cardData == null)
 					continue;
-				results.add(cardView);
+				results.add(cardData);
 			}
 		}
 
@@ -285,7 +297,7 @@ public class SearchActivity extends Activity implements Returnable {
      * 
      * return: The View that represents the card
      * */
-    public CardDataChecked extractCardInfo(Element card) {
+    public RawCardData extractCardInfo(Element card) {
     	Elements data = card.select("td");
     	int priceIdx = 8;
     	
@@ -307,12 +319,12 @@ public class SearchActivity extends Activity implements Returnable {
     			return null;
     		
     		Element cardNameElement = cardNameElements.get(0);
-    		cardName = cardNameElement.html();
+    		cardName = Jsoup.parse(cardNameElement.html()).text();
     		String url = cardNameElement.attr("href");
     		productId = url.split("product=")[1];
     		
     		Element cardEditionElement = data.get(1).select("a[href]").get(0);
-        	cardEdition = cardEditionElement.html();
+        	cardEdition = Jsoup.parse(cardEditionElement.html()).text();
         	
     	}
     	// This else statement deals with the same card as before but with different physical condition.
@@ -342,19 +354,17 @@ public class SearchActivity extends Activity implements Returnable {
     	while (priceMatches.find()) {
     		cardPrice = priceMatches.group();
     	}
-    	
-    	CardDataChecked cardView = new CardDataChecked(this, null);
-    	cardView.setAllData(new String[] {cardName, cardEdition, cardPrice, cardCondition, productId, "false"});
 
-    	return cardView;
+    	RawCardData rawData = new RawCardData(cardName, cardEdition, Float.parseFloat(cardPrice.replaceFirst("\\$", "")), cardCondition, productId);
+    	return rawData;
     }
     
-    public Vector<CardDataChecked> getCheckedCards() {
+    public Vector<RawCardData> getCheckedCards() {
     	int totalCards = mResults.getChildCount();
-		Vector<CardDataChecked> checkedCards = new Vector<CardDataChecked>();
+		Vector<RawCardData> checkedCards = new Vector<RawCardData>();
 		for (int i = 0; i < totalCards; i++) {
-			CardDataChecked card = (CardDataChecked) mResults.getChildAt(i);
-			if (card.getChecked())
+			RawCardData card = ((CardDataView) mResults.getChildAt(i)).getCardData();
+			if (card.getView().getChecked())
 				checkedCards.add(card);
 		}
 		return checkedCards;
@@ -364,22 +374,28 @@ public class SearchActivity extends Activity implements Returnable {
      * Takes the necessary attributes of a particular card and makes its own CardData View out of it.
      * @param data: A string array that contains the card name, edition, price, condition, and whether it's checked or not in that order
      * */
-    public void addCardListToResult(Vector<CardDataChecked> cards) {
+    public void addCardListToResult(Vector<RawCardData> cards) {
     	for (int i = 0; i < cards.size(); i++) {
-    		mResults.addView((CardDataChecked)cards.get(i));
+    		RawCardData card = (RawCardData)cards.get(i);
+    		
+    		// If a RawCardData has a View bound to it, then add it. Otherwise it will create a new View, which not only wastes memory but will add it as unchecked when it shouldn't be.
+    		if (card.getView() == null)
+    			mResults.addCardToView(card);
+    		else
+    			mResults.addView(card.getView());
     	}
     }
     
     public void addCardListToInventory() {
-    	Vector<CardDataChecked> cards = getCheckedCards();
+    	Vector<RawCardData> cards = getCheckedCards();
     	SharedPreferences settings = getSharedPreferences(getString(R.string.CARDLIST_INVENTORY), 0);
         SharedPreferences.Editor editor = settings.edit();
         
-        int cardCount = settings.getAll().size()/CardData.sMandatoryFieldsCount;
-    	Iterator<CardDataChecked> cardIterator = cards.iterator();
+        int cardCount = settings.getAll().size()/CardDataView.sMandatoryFieldsCount;
+    	Iterator<RawCardData> cardIterator = cards.iterator();
     	while (cardIterator.hasNext()) {
     		String prefix = "card" + cardCount++;
-    		CardDataChecked card = (CardDataChecked) cardIterator.next();
+    		RawCardData card = (RawCardData) cardIterator.next();
     	    		
     		String name = card.getName();
     		String edition = card.getEdition();
@@ -401,15 +417,15 @@ public class SearchActivity extends Activity implements Returnable {
     }
     
     public void addCardListToWishlist() {
-    	Vector<CardDataChecked> cards = getCheckedCards();
+    	Vector<RawCardData> cards = getCheckedCards();
     	SharedPreferences settings = getSharedPreferences(getString(R.string.CARDLIST_WISHLIST), 0);
         SharedPreferences.Editor editor = settings.edit();
         
-        int cardCount = settings.getAll().size()/CardData.sMandatoryFieldsCount;
-    	Iterator<CardDataChecked> cardIterator = cards.iterator();
+        int cardCount = settings.getAll().size()/CardDataView.sMandatoryFieldsCount;
+    	Iterator<RawCardData> cardIterator = cards.iterator();
     	while (cardIterator.hasNext()) {
     		String prefix = "card" + cardCount++;
-    		CardDataChecked card = (CardDataChecked) cardIterator.next();
+    		RawCardData card = (RawCardData) cardIterator.next();
     	    		
     		String name = card.getName();
     		String edition = card.getEdition();
@@ -448,9 +464,9 @@ public class SearchActivity extends Activity implements Returnable {
 		int prevResults = mResults.getChildCount();
 		
 		for (int i = 0, j = 0; i < prevResults; i++) {
-			CardDataChecked card = (CardDataChecked) mResults.getChildAt(i);
+			CardDataView card = (CardDataView) mResults.getChildAt(i);
 			if (card.getChecked()) {
-				data.putExtra("card" + j++, card.getAllDataWithoutChecked());
+				data.putExtra("card" + j++, card.getCardData().getDataArray());
 			}
 		}
 		return data;

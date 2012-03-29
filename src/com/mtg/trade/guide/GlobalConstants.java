@@ -44,7 +44,7 @@ final class GlobalConstants {
 		return str.split(delimiter);
 	}
 	
-	public static int getProductHashFromView(CardDataQuantity card) {
+	public static int getProductHashFromView(RawCardData card) {
     	int productId = Integer.parseInt(card.getProductId());
     	String productCondition = card.getCondition();
     	int productHashMask = GlobalConstants.sConditionFlagNM;
@@ -56,5 +56,33 @@ final class GlobalConstants {
     	// Bit shift the product ID to the left by 2 bits and OR it with the condition mask
     	int productHash = (productId << 2) | productHashMask;
     	return productHash;
+	}
+	
+	public static String[] getDataFromProductHash(String hash) {
+		try {
+			int intHash = Integer.parseInt(hash);
+			return getDataFromProductHash(intHash);
+		}
+		catch (NumberFormatException e) {
+			return null;
+		}
+	}
+	
+	public static String[] getDataFromProductHash(int hash) {
+		int productId = hash >> 2;
+    	int conditionFlag = hash & 0x3;
+    	String condition = "";
+    	switch (conditionFlag) {
+	    	case sConditionFlagNM:
+	    		condition = "NM";
+	    		break;
+	    	case sConditionFlagSP:
+	    		condition = "SP";
+	    		break;
+	    	case sConditionFlagMP:
+	    		condition = "MP";
+	    		break;
+    	}
+    	return new String[] {String.format("%d", productId), condition};
 	}
 }

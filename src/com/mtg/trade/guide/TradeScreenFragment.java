@@ -30,6 +30,7 @@ public class TradeScreenFragment extends Fragment  {
 		
 		LinearLayout view = (LinearLayout)inflater.inflate(R.layout.trade_list_tab, container, false);
 		mCards = (CardListLayout) view.findViewById(R.id.cardList);
+		//mCards.setFragmentContainer(this);
 		mPriceSumTextView = (TextView) view.findViewById(R.id.totalCost);
 
         if (savedInstanceState != null) {
@@ -37,8 +38,7 @@ public class TradeScreenFragment extends Fragment  {
         		String[] cardData = savedInstanceState.getStringArray("card"+i);
         		if (cardData == null)
         			break;
-            	CardDataQuantity cardView = new CardDataQuantity(mActivity, null);
-            	cardView.setAllData(cardData);
+            	RawCardData cardView = new RawCardData(cardData, null);
             	mCards.addCardToView(cardView);    	
         	}
         }
@@ -61,8 +61,8 @@ public class TradeScreenFragment extends Fragment  {
 	public void onSaveInstanceState(Bundle outState) {
     	int cards = mCards.getChildCount();
     	for (int i = 0; i < cards; i++) {
-    		CardDataQuantity card = (CardDataQuantity) mCards.getChildAt(i);
-    		String[] cardData = card.getAllData();
+    		RawCardData card = ((CardDataView) mCards.getChildAt(i)).getCardData();
+    		String[] cardData = card.getDataArray();
     		outState.putStringArray("card" + i, cardData);
     	}
 	}
@@ -73,6 +73,8 @@ public class TradeScreenFragment extends Fragment  {
 		}
 			
     	SharedPreferences settings = mActivity.getSharedPreferences(list, 0);
+    	
+    	//mCards.toggleChainedMode();
         for (int i = 0; ; i++) {
         	String prefix = "card" + i;
         	
@@ -86,23 +88,15 @@ public class TradeScreenFragment extends Fragment  {
     		int quantity = settings.getInt(prefix + "_quantity", 1);
     		
     		// Create and set card information
-    		CardDataQuantity c = new CardDataQuantity(mActivity, null);
-    		c.setName(name);
-    		c.setEdition(edition);
-    		c.setPrice(price);
-    		c.setCondition(condition);
-    		c.setProductId(productId);
-    		c.setQuantity(quantity);
-    		
+    		RawCardData c = new RawCardData(name, edition, price, condition, productId, quantity);    		
     		mCards.addCardToView(c, false);
-    		c.setFragmentContainer(this);
     	}
+        //mCards.toggleChainedMode();
         recalculate();
 	}
     
     public void recalculate() {
     	mPriceSumTextView.setText("Total Price: $" + String.format("%.2f", mCards.getPriceSum()));
-    	mActivity.judgeTrade();
     }
     
     public CardListLayout getCardList() {
@@ -110,6 +104,7 @@ public class TradeScreenFragment extends Fragment  {
     }
     
     public float getPriceSum() {
+    	//float priceSum = mCards.getPriceSum();
     	if (mCards == null)
     		return 0;
     	return mCards.getPriceSum();

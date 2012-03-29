@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 
+    <item android:id="@+id/trade_screen_trading_options"
+              android:icon="@drawable/ic_menu_upload"
+              android:title="Trading Options">
+	    <menu android:id="@+id/group_trading_options">
+            <item android:id="@+id/trade_screen_new_trade"
+                  android:title="New Trade" />	        
+	        <item android:id="@+id/trade_screen_save_trade"
+	              android:title="Save Trade" />
+	        <item android:id="@+id/trade_screen_load_trade"
+                  android:title="Load Trade"/>
+            <item android:id="@+id/trade_screen_clear_trade"
+                  android:title="Clear Trade"/>
+	        <item android:id="@+id/trade_screen_accept_trade"
+	              android:title="Accept/Revert Trade" />
+	        <item android:id="@+id/trade_screen_set_trade_description"
+                  android:title="Set Trade Description" />
+	    </menu>
+    </item>
+     -->
     <item android:id="@+id/trade_screen_search"
           android:icon="@drawable/ic_menu_search"
           android:title="Search"/>

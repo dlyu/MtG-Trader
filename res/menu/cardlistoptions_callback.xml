@@ -6,4 +6,8 @@
     <item android:id="@+id/card_list_cancel"
           android:icon="@drawable/ic_menu_close"
           android:title="Cancel"/>
+    <item android:id="@+id/card_list_select_all"
+          android:title="Select All" />
+    <item android:id="@+id/card_list_unselect_all"
+          android:title="Unselect All"/>
 </menu>

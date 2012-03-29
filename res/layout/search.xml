@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.mtg.trade.guide"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
@@ -10,12 +11,21 @@
         android:layout_height="wrap_content"
         style="@style/HeaderLabel"
         android:text="Search a card"/>
+    
+    <com.mtg.trade.guide.CardSearchTextBox
+        android:id="@+id/card"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:maxLines="1"
+        android:hint="Enter card name here"/>
+    <!--  
     <EditText
         android:id="@+id/card"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:maxLines="1"
         android:hint="Enter card name here"/>
+        -->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -34,18 +44,20 @@
 	        android:layout_weight="0.5"
 	        android:enabled="false"
 	        android:text="More"/>        
-    </LinearLayout>
-
+    </LinearLayout> 
 	<ScrollView
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-	    <LinearLayout
-	        android:layout_width="fill_parent"
-        	android:layout_height="wrap_content"
-        	android:orientation="vertical"
-        	android:id="@+id/results"/>
+	    <com.mtg.trade.guide.CardListLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/results"
+            custom:cardsCheckable="true"
+            custom:cardsQuantifiable="false"/>
 	</ScrollView>
+
     <LinearLayout 
         android:id="@+id/ad_placeholder" 
         android:background="#00000000"

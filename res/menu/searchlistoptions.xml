@@ -6,4 +6,8 @@
     <item android:id="@+id/search_screen_add_to_wishlist"
           android:icon="@drawable/ic_menu_upload"
           android:title="Add selected to wishlist" />
+    <item android:id="@+id/search_screen_select_all"
+          android:title="Select All" />
+    <item android:id="@+id/search_screen_unselect_all"
+          android:title="Unselect All"/>
 </menu>

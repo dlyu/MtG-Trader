@@ -13,6 +13,7 @@ public class InventoryActivity extends CardListActivity {
         setContentView(R.layout.inventory);
         
         mPreferencesListName = getString(R.string.CARDLIST_INVENTORY);
+        mTableName = getString(R.string.TABLE_INVENTORY);
         mList = (CardListLayout)findViewById(R.id.inventory);
         
         mToastSaved = Toast.makeText(this, "Inventory saved", Toast.LENGTH_SHORT);
@@ -24,8 +25,6 @@ public class InventoryActivity extends CardListActivity {
         mSavePrompt.setNegativeButton("Discard", mNegativeButtonListener);
         mSavePrompt.setNeutralButton("Return", mNeutralButtonListener);
         
-        readFromStorageList(mPreferencesListName);
-        
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         mCallbackMode = true;
@@ -34,9 +33,17 @@ public class InventoryActivity extends CardListActivity {
         }
         else {
         	int requestCode = extras.getInt("requestCode", GlobalConstants.sFlagNormal);
+        	// Does not return data on activity finish
         	if (requestCode == GlobalConstants.sFlagNormal) {
         		mCallbackMode = false;
         	}
+        	// Returns data on activity finish
+        	else {
+        		mList.setCardViewConfigurable(true, true);
+        	}
         }
+        
+        readFromStorageList(this.mPreferencesListName);
+        //readFromDatabase();
     }
 }

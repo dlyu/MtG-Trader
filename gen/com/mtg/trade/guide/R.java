@@ -9,6 +9,22 @@ package com.mtg.trade.guide;
 
 public final class R {
     public static final class attr {
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int cardsCheckable=0x7f010000;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int cardsQuantifiable=0x7f010001;
     }
     public static final class drawable {
         public static final int button_inventory=0x7f020000;
@@ -42,52 +58,65 @@ public final class R {
         public static final int mtg_logo=0x7f02001c;
     }
     public static final class id {
-        public static final int ad_placeholder=0x7f08000f;
-        public static final int card=0x7f08000b;
-        public static final int cardLabel1=0x7f080000;
-        public static final int cardLabel2=0x7f080001;
-        public static final int cardList=0x7f080011;
-        public static final int card_list_cancel=0x7f080018;
-        public static final int card_list_revert=0x7f080017;
-        public static final int card_list_save=0x7f080016;
-        public static final int card_list_search=0x7f080015;
-        public static final int checkbox=0x7f080002;
-        public static final int inventory=0x7f080005;
-        public static final int inventoryButton=0x7f080008;
-        public static final int moreSearch=0x7f08000d;
-        public static final int optionButton=0x7f08000a;
+        public static final int ad_placeholder=0x7f080010;
+        public static final int autocomplete_query=0x7f080000;
+        public static final int card=0x7f08000c;
+        public static final int cardLabel1=0x7f080001;
+        public static final int cardLabel2=0x7f080002;
+        public static final int cardList=0x7f080015;
+        public static final int card_list_cancel=0x7f08001d;
+        public static final int card_list_revert=0x7f08001c;
+        public static final int card_list_save=0x7f08001b;
+        public static final int card_list_search=0x7f08001a;
+        public static final int card_list_select_all=0x7f08001e;
+        public static final int card_list_unselect_all=0x7f08001f;
+        public static final int checkbox=0x7f080005;
+        public static final int inventory=0x7f080006;
+        public static final int inventoryButton=0x7f080009;
+        public static final int moreSearch=0x7f08000e;
+        public static final int optionButton=0x7f08000b;
         public static final int quantity=0x7f080003;
         public static final int removeButton=0x7f080004;
-        public static final int results=0x7f08000e;
-        public static final int searchButton=0x7f080007;
-        public static final int search_screen_add_to_inventory=0x7f080019;
-        public static final int search_screen_add_to_wishlist=0x7f08001a;
-        public static final int startSearch=0x7f08000c;
-        public static final int totalCost=0x7f080010;
-        public static final int tradeButton=0x7f080006;
-        public static final int trade_judgment=0x7f080013;
-        public static final int trade_screen_load_inventory=0x7f08001c;
-        public static final int trade_screen_load_wishlist=0x7f08001d;
-        public static final int trade_screen_search=0x7f08001b;
-        public static final int viewpager=0x7f080012;
-        public static final int wishlist=0x7f080014;
-        public static final int wishlistButton=0x7f080009;
+        public static final int results=0x7f08000f;
+        public static final int searchButton=0x7f080008;
+        public static final int search_screen_add_to_inventory=0x7f080020;
+        public static final int search_screen_add_to_wishlist=0x7f080021;
+        public static final int search_screen_select_all=0x7f080022;
+        public static final int search_screen_unselect_all=0x7f080023;
+        public static final int startSearch=0x7f08000d;
+        public static final int totalCost=0x7f080014;
+        public static final int tradeButton=0x7f080007;
+        public static final int trade_file_desc=0x7f080013;
+        public static final int trade_file_last_modify=0x7f080011;
+        public static final int trade_file_status=0x7f080012;
+        public static final int trade_history=0x7f080016;
+        public static final int trade_judgment=0x7f080018;
+        public static final int trade_screen_load_inventory=0x7f080025;
+        public static final int trade_screen_load_wishlist=0x7f080026;
+        public static final int trade_screen_search=0x7f080024;
+        public static final int viewpager=0x7f080017;
+        public static final int wishlist=0x7f080019;
+        public static final int wishlistButton=0x7f08000a;
     }
     public static final class layout {
-        public static final int carddatachecked=0x7f030000;
-        public static final int carddataqty=0x7f030001;
+        public static final int card_search_box=0x7f030000;
+        public static final int carddataview=0x7f030001;
         public static final int inventory=0x7f030002;
-        public static final int main=0x7f030003;
-        public static final int search=0x7f030004;
-        public static final int trade_list_tab=0x7f030005;
-        public static final int tradescreen=0x7f030006;
-        public static final int wishlist=0x7f030007;
+        public static final int list_item=0x7f030003;
+        public static final int main=0x7f030004;
+        public static final int search=0x7f030005;
+        public static final int trade_file_view=0x7f030006;
+        public static final int trade_list_tab=0x7f030007;
+        public static final int tradeload=0x7f030008;
+        public static final int tradescreen=0x7f030009;
+        public static final int wishlist=0x7f03000a;
     }
     public static final class menu {
         public static final int cardlistoptions=0x7f070000;
         public static final int cardlistoptions_callback=0x7f070001;
         public static final int searchlistoptions=0x7f070002;
-        public static final int tradelistoptions=0x7f070003;
+        public static final int searchlistoptions_callback=0x7f070003;
+        public static final int tradelistoptions=0x7f070004;
     }
     public static final class string {
         /**  
@@ -101,6 +130,13 @@ public final class R {
         public static final int CARDLIST_WISHLIST=0x7f050002;
         public static final int PREFERENCES_NAME=0x7f050003;
         public static final int PRICE_DIFF_TEXT=0x7f050005;
+        public static final int TABLE_INVENTORY=0x7f050008;
+        public static final int TABLE_TRADE_GIVING=0x7f05000a;
+        public static final int TABLE_TRADE_LIST=0x7f05000c;
+        public static final int TABLE_TRADE_RECEIVING=0x7f05000b;
+        public static final int TABLE_WISHLIST=0x7f050009;
+        public static final int TRADE_ACCEPTED=0x7f050007;
+        public static final int TRADE_PENDING=0x7f050006;
         public static final int app_name=0x7f050000;
     }
     public static final class style {
@@ -113,4 +149,49 @@ public final class R {
     public static final class xml {
         public static final int preferences=0x7f040000;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a CardListLayout.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #CardListLayout_cardsCheckable com.mtg.trade.guide:cardsCheckable}</code></td><td></td></tr>
+           <tr><td><code>{@link #CardListLayout_cardsQuantifiable com.mtg.trade.guide:cardsQuantifiable}</code></td><td></td></tr>
+           </table>
+           @see #CardListLayout_cardsCheckable
+           @see #CardListLayout_cardsQuantifiable
+         */
+        public static final int[] CardListLayout = {
+            0x7f010000, 0x7f010001
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.mtg.trade.guide.R.attr#cardsCheckable}
+          attribute's value can be found in the {@link #CardListLayout} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:cardsCheckable
+        */
+        public static final int CardListLayout_cardsCheckable = 0;
+        /**
+          <p>This symbol is the offset where the {@link com.mtg.trade.guide.R.attr#cardsQuantifiable}
+          attribute's value can be found in the {@link #CardListLayout} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:cardsQuantifiable
+        */
+        public static final int CardListLayout_cardsQuantifiable = 1;
+    };
 }
