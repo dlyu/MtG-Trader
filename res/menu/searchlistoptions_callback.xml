@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/search_screen_select_all"
+          android:title="Select All" />
+    <item android:id="@+id/search_screen_unselect_all"
+          android:title="Unselect All"/>
+</menu>
