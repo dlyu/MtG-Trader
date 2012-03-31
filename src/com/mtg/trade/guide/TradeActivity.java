@@ -33,7 +33,7 @@ import android.widget.TextView;
  * The <code>TabsViewPagerFragmentActivity</code> class implements the Fragment activity that maintains a TabHost using a ViewPager.
  * @author mwho
  */
-public class TradeActivity extends FragmentActivity implements TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener, QuantityChangedListener {
+public class TradeActivity extends FragmentActivity implements TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener, CardAttributeChangedListener {
 	public static final String TRADE_STATE_PENDING = "Pending";
 	public static final String TRADE_STATE_ACCEPTED = "Accepted";
 	
@@ -259,7 +259,7 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
     					break;
 
     				RawCardData c = new RawCardData(cardData, null);
-    				c.setQuantityChangeListener(this);
+    				c.setCardAttributeChangeListener(this);
     				target.getCardList().addCardToView(c, false);
     				//c.getView().setFragmentContainer(target);
     			}
@@ -418,7 +418,15 @@ public class TradeActivity extends FragmentActivity implements TabHost.OnTabChan
 	}
 
 	@Override
-	public void onQuantityChange(QuantityChangedEvent q) {
+	public void onQuantityChange(CardAttributeChangedEvent q) {
+		// TODO Auto-generated method stub
+		judgeTrade();
+		mOffered.recalculate();
+		mOffering.recalculate();
+	}
+
+	@Override
+	public void onRemove() {
 		// TODO Auto-generated method stub
 		judgeTrade();
 		mOffered.recalculate();

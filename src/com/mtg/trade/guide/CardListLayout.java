@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.CheckBox;
 
-public class CardListLayout extends LinearLayout implements QuantityChangedListener {
+public class CardListLayout extends LinearLayout implements CardAttributeChangedListener {
 	protected HashMap<Integer, RawCardData> mListMap = new HashMap<Integer, RawCardData>();
 	private float mPriceSum;
 
@@ -67,7 +67,7 @@ public class CardListLayout extends LinearLayout implements QuantityChangedListe
 	}*/
 	
 	@Override
-	public void onQuantityChange(QuantityChangedEvent q) {
+	public void onQuantityChange(CardAttributeChangedEvent q) {
 		/*
 		if (q.getMiscellaneous() != this.IGNORE_LISTENER) {
 			int displacement = q.getNewQuantity() - q.getOldQuantity();
@@ -187,7 +187,7 @@ public class CardListLayout extends LinearLayout implements QuantityChangedListe
     		mListMap.put(productHash, card);
     		CardDataView view = new CardDataView(mContext, null, card, mCheckable, mQuantifiable);
     		this.addView(view);
-    		card.setQuantityChangeListener(this);  		
+    		card.setCardAttributeChangeListener(this);  		
     	}
 	}
 	
@@ -252,6 +252,7 @@ public class CardListLayout extends LinearLayout implements QuantityChangedListe
 
 		mListMap.remove(productHash);
 		this.removeViewAt(idx);
+		card.onRemove();
 		
 		//view.setActive(false); // "delete" the card by making it invisible
 		//CardListAction removeAction = new CardListAction(GlobalConstants.getProductHashFromView(card), CardListAction.ACTION_DELETE);
@@ -326,6 +327,12 @@ public class CardListLayout extends LinearLayout implements QuantityChangedListe
 	 * Rearranges the cards presented in this view by card edition. 
 	 * */
 	public void sortByEdition() {
+		
+	}
+
+	@Override
+	public void onRemove() {
+		// TODO Auto-generated method stub
 		
 	}
 	

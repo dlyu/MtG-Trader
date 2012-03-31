@@ -17,9 +17,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import org.jsoup.*;
@@ -37,7 +40,7 @@ public class SearchActivity extends Activity implements Returnable {
 	Button mSearchButton;
 	Button mMoreButton;
 	
-	EditText mCard;
+	CardSearchTextBox mCard;
 	CardListLayout mResults;
 	
 	String mLastCardName;
@@ -130,7 +133,37 @@ public class SearchActivity extends Activity implements Returnable {
         mMoreButton = (Button)findViewById(R.id.moreSearch);
         mMoreButton.setOnClickListener(mMoreListener);
         
-        mCard = (EditText)findViewById(R.id.card);
+        mCard = (CardSearchTextBox)findViewById(R.id.card);
+        mCard.setOnEditorActionListener(new OnEditorActionListener() {
+
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+					try {
+						// Execute a whole new search queryl
+						String cardQuery = mCard.getText().toString();
+						if (cardQuery != null) {
+							
+							mLoader.show();
+							mQueryStart = 0;
+							searchGET(cardQuery, false);
+							mLastQuery = cardQuery;
+							mLoader.dismiss();
+						}
+
+					} catch (IllegalStateException e) {
+						mGenericError.show();
+						mLoader.dismiss();
+					} catch (IOException e) {	
+						mInternetError.show();
+						mLoader.dismiss();
+					}					
+				}
+
+				return false;
+			}
+        	
+        });
         
         mResults = (CardListLayout)findViewById(R.id.results);
 

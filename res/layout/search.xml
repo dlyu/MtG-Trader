@@ -17,15 +17,9 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:maxLines="1"
+        android:inputType="textWebEditText"
+        android:imeOptions="actionSearch"
         android:hint="Enter card name here"/>
-    <!--  
-    <EditText
-        android:id="@+id/card"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:maxLines="1"
-        android:hint="Enter card name here"/>
-        -->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
